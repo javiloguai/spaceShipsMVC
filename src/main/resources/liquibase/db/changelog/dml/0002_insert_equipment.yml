@@ -1,0 +1,28 @@
+databaseChangeLog:
+  - changeSet:
+      id: insert-data-SPACE_SHIP_EQUIPMENT-v1.0.0
+      author: javiloguai
+      comment: "Initialize SPACE_SHIP_EQUIPMENT"
+      changes:
+        - loadData:
+            columns:
+              - column:
+                  header: ID
+                  name: ID
+                  type: NUMERIC
+              - column:
+                  header: SPACE_SHIP_ID
+                  name: SPACE_SHIP_ID
+                  type: NUMERIC
+              - column:
+                  header: SHIP_EQUIPMENT
+                  name: SHIP_EQUIPMENT
+                  type: STRING
+            commentLineStartsWith: //
+            encoding: UTF-8
+            file: 0002_insert_equipment.csv
+            quotchar: ''''
+            relativeToChangelogFile: true
+            separator: ;
+            tableName: SPACE_SHIP_EQUIPMENT
+            usePreparedStatements: true

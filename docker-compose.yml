@@ -1,0 +1,13 @@
+version: '3.5'
+
+services:
+  spaceShips:
+    container_name: spaceShips_container
+    image: spaceShips_api
+    restart: always
+    ports:
+      - "8080:8080"
+
+
+
+

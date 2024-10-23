@@ -1,0 +1,28 @@
+databaseChangeLog:
+  - changeSet:
+      id: insert-data-SPACE-SHIP-v1.0.0
+      author: javiloguai
+      comment: "Initialize SPACE_SHIP"
+      changes:
+        - loadData:
+            columns:
+              - column:
+                  header: ID
+                  name: ID
+                  type: NUMERIC
+              - column:
+                  header: NAME
+                  name: NAME
+                  type: STRING
+              - column:
+                  header: MEDIA_SHOW
+                  name: MEDIA_SHOW
+                  type: STRING
+            commentLineStartsWith: //
+            encoding: UTF-8
+            file: 0001_insert_spaceships.csv
+            quotchar: ''''
+            relativeToChangelogFile: true
+            separator: ;
+            tableName: SPACE_SHIP
+            usePreparedStatements: true
