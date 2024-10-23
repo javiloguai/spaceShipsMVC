@@ -7,8 +7,6 @@ import com.w2m.spaceShips.restapi.server.requests.RegisterRequest;
 import com.w2m.spaceShips.restapi.server.responses.AuthenticationResponse;
 import com.w2m.spaceShips.restapi.services.AuthenticationService;
 import com.w2m.spaceShips.restapi.services.jwt.JwtService;
-import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -19,20 +17,25 @@ import org.springframework.stereotype.Service;
  * @author javiloguai
  */
 @Service
-@RequiredArgsConstructor
 public class AuthenticationServiceImpl implements AuthenticationService {
 
-    @Autowired
-    private UserRepository userRepository;
+    private final UserRepository userRepository;
 
-    @Autowired
-    private PasswordEncoder passwordEncoder;
+    private final PasswordEncoder passwordEncoder;
 
-    @Autowired
-    private JwtService jwtService;
+    private final JwtService jwtService;
 
-    @Autowired
-    private AuthenticationManager authenticationManager;
+    private final AuthenticationManager authenticationManager;
+
+    public AuthenticationServiceImpl(final UserRepository userRepository,
+                                     final PasswordEncoder passwordEncoder,
+                                     final JwtService jwtService,
+                                     final AuthenticationManager authenticationManager) {
+        this.userRepository = userRepository;
+        this.passwordEncoder = passwordEncoder;
+        this.jwtService = jwtService;
+        this.authenticationManager = authenticationManager;
+    }
 
     public AuthenticationResponse login(AuthenticationRequest request) {
         authenticationManager.authenticate(

@@ -15,15 +15,16 @@ import com.w2m.spaceShips.restapi.persistence.repositories.SpaceShipRepository;
 import com.w2m.spaceShips.restapi.services.BasicService;
 import com.w2m.spaceShips.restapi.services.SpaceShipService;
 import com.w2m.spaceShips.restapi.services.mappers.SpaceShipDomainMapper;
-import com.w2m.spaceShips.utils.ParamUtils;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.cache.annotation.Caching;
+import org.springframework.context.ApplicationContext;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.CollectionUtils;
+import org.springframework.util.StringUtils;
 import org.springframework.validation.annotation.Validated;
 
 import java.util.ArrayList;
@@ -54,11 +55,17 @@ public class SpaceShipServiceImpl extends BasicService implements SpaceShipServi
 
     private static final String SPACE_SHIP_MANDATORY = "The SpaceShip Object is Mandatory";
 
-    @Autowired
-    private SpaceShipRepository spaceShipRepository;
+    private final SpaceShipRepository spaceShipRepository;
 
-    @Autowired
-    private SpaceShipEquipmentRepository spaceShipEquipmentRepository;
+    private final SpaceShipEquipmentRepository spaceShipEquipmentRepository;
+
+    public SpaceShipServiceImpl(final ApplicationContext applicationContext,
+                                final SpaceShipRepository spaceShipRepository,
+                                final SpaceShipEquipmentRepository spaceShipEquipmentRepository) {
+        super(applicationContext);
+        this.spaceShipRepository = spaceShipRepository;
+        this.spaceShipEquipmentRepository = spaceShipEquipmentRepository;
+    }
 
     @Override
     @Cacheable(cacheNames = "allships")
@@ -79,19 +86,9 @@ public class SpaceShipServiceImpl extends BasicService implements SpaceShipServi
     }
 
     @Override
-    @Cacheable(cacheNames = "ships", key = "#name")
-    public List<SpaceShipDomain> getAllSpaceShipsByName(final String name) {
-        if (ParamUtils.paramNotInformed(name)) {
-            throw new BusinessRuleViolatedException(NAME_MANDATORY);
-        }
-
-        return SpaceShipDataBaseMapper.INSTANCE.entityToDomain(spaceShipRepository.findByNameContaining(name));
-    }
-
-    @Override
     @Cacheable(cacheNames = "pagedships", key = "#name")
     public Page<SpaceShipDomain> pageAllSpaceShipsByName(final String name, final Pageable pageable) {
-        if (ParamUtils.paramNotInformed(name)) {
+        if (!StringUtils.hasText(name)) {
             throw new BusinessRuleViolatedException(NAME_MANDATORY);
         }
         if (Objects.isNull(pageable)) {
@@ -103,7 +100,7 @@ public class SpaceShipServiceImpl extends BasicService implements SpaceShipServi
     }
 
     @Override
-    @Cacheable(cacheNames = "equipment", key = "#equipment")
+    @Cacheable(cacheNames = "equipment", key = "#shipEquipment")
     public List<SpaceShipDomain> getAllSpaceShipsByEquipment(final Equipment shipEquipment) {
         if (shipEquipment == null) {
             throw new BusinessRuleViolatedException(EQUIPMENT_MANDATORY);
@@ -264,10 +261,10 @@ public class SpaceShipServiceImpl extends BasicService implements SpaceShipServi
         if (spaceShipDTO == null) {
             throw new BusinessRuleViolatedException(SPACE_SHIP_MANDATORY);
         }
-        if (ParamUtils.paramNotInformed(spaceShipDTO.getName())) {
+        if (!StringUtils.hasText(spaceShipDTO.getName())) {
             throw new BusinessRuleViolatedException(NAME_EMPTY);
         }
-        if (ParamUtils.paramNotInformed(spaceShipDTO.getEquipment())) {
+        if (CollectionUtils.isEmpty(spaceShipDTO.getEquipment())) {
             throw new BusinessRuleViolatedException(EQUIPMENT_EMPTY);
         }
     }

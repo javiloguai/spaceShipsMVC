@@ -21,7 +21,7 @@ import lombok.EqualsAndHashCode;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springdoc.core.annotations.ParameterObject;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.MessageSource;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PagedResourcesAssembler;
@@ -45,14 +45,18 @@ public class SpaceShipCRUDController extends BaseController {
 
     private static final Logger LOGGER = LogManager.getLogger(SpaceShipCRUDController.class);
 
-    @Autowired
-    private SpaceShipService spaceShipService;
+    private final SpaceShipService spaceShipService;
 
-    @Autowired
-    private PagedResourcesAssembler<SpaceShipDomain> pagedResourcesAssembler;
+    private final PagedResourcesAssembler<SpaceShipDomain> pagedResourcesAssembler;
 
-    @Autowired
-    private SpaceShipModelAssembler spaceShipModelAssembler;
+    private final SpaceShipModelAssembler spaceShipModelAssembler;
+
+    public SpaceShipCRUDController(final SpaceShipService spaceShipService, PagedResourcesAssembler<SpaceShipDomain> pagedResourcesAssembler, final SpaceShipModelAssembler spaceShipModelAssembler, final MessageSource messageSource) {
+        super(messageSource);
+        this.spaceShipService = spaceShipService;
+        this.pagedResourcesAssembler = pagedResourcesAssembler;
+        this.spaceShipModelAssembler = spaceShipModelAssembler;
+    }
 
     /**
      * Some javadoc here
@@ -101,33 +105,6 @@ public class SpaceShipCRUDController extends BaseController {
         }
         final PagedModel<SpaceShipResponse> response = pagedResourcesAssembler.toModel(allships, spaceShipModelAssembler);
         return new ResponseEntity<>(response, HttpStatus.OK);
-
-    }
-
-    /**
-     * Some javadoc here
-     *
-     * @return List
-     */
-    @GetMapping("/byName")
-    @Operation(summary = "Gets By Name", description = "Gets All the spaceships by name. The name IS CASE SENSITIVE.")
-    @ApiResponses({
-            @ApiResponse(responseCode = "200", description = "Successful retrieval of spaceships", content = @Content(array = @ArraySchema(schema = @Schema(implementation = SpaceShipResponse.class)))),
-            @ApiResponse(responseCode = "204", description = "EmptyList. Any spaceship found.", content = {
-                    @Content(schema = @Schema())}),
-            @ApiResponse(responseCode = "403", description = "Forbidden.", content = {
-                    @Content(schema = @Schema())})})
-    @LogExecutionTime
-    //  @PreAuthorize("hasAnyAuthority('CONSULTANT_TYPE1')")
-    public ResponseEntity<List<SpaceShipResponse>> getAllSpaceShipsByName(@RequestParam(required = true) String name) {
-        LOGGER.debug("We can log whatever we need...");
-        List<SpaceShipDomain> allships = this.spaceShipService.getAllSpaceShipsByName(name);
-        LOGGER.debug(
-                "If it's necessary to pick apart the business objects from the response objects we could deal with a mapper here. I'll will not repeat this or implement on the other endpoints, is just an example.");
-        if (allships.isEmpty()) {
-            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-        }
-        return new ResponseEntity<>(SpaceShipResponseMapper.INSTANCE.toResponses(allships), HttpStatus.OK);
 
     }
 

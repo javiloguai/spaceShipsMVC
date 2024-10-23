@@ -71,6 +71,9 @@ run mvn clean install
 ## To access H2 DB console
 
 > URL : http://localhost:8080/h2-ui/
+>
+> > JDBC URL: jdbc:h2:mem:spaceshipsW2Mdb
+>
 > > user is sa
 >
 > > password is sa
@@ -103,17 +106,13 @@ run mvn clean install
 
 > GET : http://localhost:8080/api/spaceships/page
 
-#### Gets All the spaceships by name
-
-> GET : http://localhost:8080/api/spaceships/byName
-
 #### Page All the spaceships by name
 
 > GET : http://localhost:8080/api/spaceships/byName/page
 
 #### Gate All the spaceships by a particular equipment
 
-> GET : http://localhost:8080/api/spaceships/byequipment
+> GET : http://localhost:8080/api/spaceships/byShipEquipment
 
 #### Get spaceship by id
 

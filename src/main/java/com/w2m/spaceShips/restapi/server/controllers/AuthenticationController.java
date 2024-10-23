@@ -10,7 +10,6 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -28,8 +27,11 @@ public class AuthenticationController {
 
     private static final Logger LOGGER = LogManager.getLogger(AuthenticationController.class);
 
-    @Autowired
-    private AuthenticationService authenticationService;
+    private final AuthenticationService authenticationService;
+
+    public AuthenticationController(final AuthenticationService authenticationService) {
+        this.authenticationService = authenticationService;
+    }
 
     @Operation(summary = "Login", description = "This api used to authenticate user to access secured api's")
     @PostMapping(RequestMappings.LOGIN)

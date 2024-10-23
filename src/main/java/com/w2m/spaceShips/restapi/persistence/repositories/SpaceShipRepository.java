@@ -6,7 +6,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
-import java.util.List;
 import java.util.Optional;
 
 /**
@@ -15,8 +14,6 @@ import java.util.Optional;
 @Repository
 public interface SpaceShipRepository extends JpaRepository<SpaceShipEntity, Long> {
     Optional<SpaceShipEntity> findById(final Long id);
-
-    List<SpaceShipEntity> findByNameContaining(final String name);
 
     Page<SpaceShipEntity> findByNameContainingIgnoreCase(final String name, Pageable pageable);
 

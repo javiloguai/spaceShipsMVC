@@ -16,7 +16,7 @@ import org.junit.jupiter.api.*;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.*;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.context.ApplicationContext;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
@@ -50,13 +50,15 @@ public class SpaceShipServiceImplTest {
 
     private static final String SPACE_SHIP_MANDATORY = "The SpaceShip Object is Mandatory";
 
-    @InjectMocks
     private SpaceShipServiceImpl spaceShipService;
 
-    @MockBean
+    @Mock
+    private ApplicationContext applicationContext;
+
+    @Mock
     private SpaceShipRepository spaceShipRepository;
 
-    @MockBean
+    @Mock
     private SpaceShipEquipmentRepository spaceShipEquipmentRepository;
 
     @Captor
@@ -64,6 +66,13 @@ public class SpaceShipServiceImplTest {
 
     @Captor
     private ArgumentCaptor<SpaceShipEntity> shipEntityArgumentCaptor;
+
+    @BeforeEach
+    void setUp() {
+        MockitoAnnotations.openMocks(this);
+        this.spaceShipService = new SpaceShipServiceImpl(applicationContext,
+                spaceShipRepository, spaceShipEquipmentRepository);
+    }
 
     /**
      * Tests for getAllSpaceShips method
@@ -179,12 +188,8 @@ public class SpaceShipServiceImplTest {
             final Pageable pageable = PageRequest.of(0, 20);
 
             final BusinessRuleViolatedException ex = Assertions.assertThrows(BusinessRuleViolatedException.class,
-                    () -> spaceShipService.getAllSpaceShipsByName(null));
-            Assertions.assertEquals(NAME_MANDATORY, ex.getMessage());
-
-            final BusinessRuleViolatedException ex2 = Assertions.assertThrows(BusinessRuleViolatedException.class,
                     () -> spaceShipService.pageAllSpaceShipsByName(null, pageable));
-            Assertions.assertEquals(NAME_MANDATORY, ex2.getMessage());
+            Assertions.assertEquals(NAME_MANDATORY, ex.getMessage());
 
         }
 
@@ -226,16 +231,19 @@ public class SpaceShipServiceImplTest {
 
             final List<SpaceShipEntity> shipList = List.of();
 
-            Mockito.when(spaceShipRepository.findByNameContaining(ArgumentMatchers.any(String.class)))
-                    .thenReturn(shipList);
+            final Pageable pageable = PageRequest.of(0, 20);
+            final Page<SpaceShipEntity> pageResult = new PageImpl<>(shipList, pageable, 1);
+
+            Mockito.when(spaceShipRepository.findByNameContainingIgnoreCase(ArgumentMatchers.any(String.class),
+                    ArgumentMatchers.any(Pageable.class))).thenReturn(pageResult);
 
             // when
-            final List<SpaceShipDomain> listResultDomain = spaceShipService.getAllSpaceShipsByName("XXX");
+            final Page<SpaceShipDomain> pageResultDomain = spaceShipService.pageAllSpaceShipsByName("XXX", pageable);
 
             // then
-            Assertions.assertNotNull(listResultDomain);
-            Assertions.assertTrue(listResultDomain.isEmpty());
-            Assertions.assertEquals(shipList.size(), listResultDomain.size());
+            Assertions.assertNotNull(pageResultDomain);
+            Assertions.assertTrue(pageResultDomain.isEmpty());
+            Assertions.assertEquals(shipList.size(), pageResultDomain.getTotalElements());
         }
 
         @Test
@@ -272,16 +280,19 @@ public class SpaceShipServiceImplTest {
             final SpaceShipEntity chip2 = SpaceShipFactory.getEntity(2L);
 
             final List<SpaceShipEntity> shipList = List.of(chip1, chip2);
-
-            Mockito.when(spaceShipRepository.findByNameContaining(chip1.getName())).thenReturn(shipList);
+            final Pageable pageable = PageRequest.of(0, 20);
+            final Page<SpaceShipEntity> pageResult = new PageImpl<>(shipList, pageable, 1);
+            //Mockito.when(spaceShipRepository.findByNameContaining(chip1.getName())).thenReturn(shipList);
+            Mockito.when(spaceShipRepository.findByNameContainingIgnoreCase(chip1.getName(), pageable))
+                    .thenReturn(pageResult);
 
             // when
-            final List<SpaceShipDomain> listResultDomain = spaceShipService.getAllSpaceShipsByName(chip1.getName());
+            final Page<SpaceShipDomain> pageResultDomain = spaceShipService.pageAllSpaceShipsByName(chip1.getName(), pageable);
 
             // then
-            Assertions.assertEquals(shipList.size(), listResultDomain.size());
-            Assertions.assertEquals(shipList.get(0).getId(), listResultDomain.get(0).getId());
-            Assertions.assertEquals(shipList.get(1).getId(), listResultDomain.get(1).getId());
+            Assertions.assertEquals(shipList.size(), pageResultDomain.getTotalElements());
+            Assertions.assertEquals(shipList.get(0).getId(), pageResultDomain.toList().get(0).getId());
+            Assertions.assertEquals(shipList.get(1).getId(), pageResultDomain.toList().get(1).getId());
         }
 
     }
@@ -510,7 +521,7 @@ public class SpaceShipServiceImplTest {
 
             Mockito.when(spaceShipRepository.findFirstByNameIgnoreCase("alreadyExisting"))
                     .thenReturn(Optional.of(alreadyExistingE));
-            Mockito.when(spaceShipRepository.findFirstByNameIgnoreCase(noShipEquipment.getName())).thenReturn(Optional.empty());
+            // Mockito.when(spaceShipRepository.findFirstByNameIgnoreCase(noShipEquipment.getName())).thenReturn(Optional.empty());
 
             final BusinessRuleViolatedException ex = Assertions.assertThrows(BusinessRuleViolatedException.class,
                     () -> spaceShipService.createSpaceShip(noName));
@@ -579,11 +590,11 @@ public class SpaceShipServiceImplTest {
             alreadyExisting.setName("alreadyExisting");
             alreadyExistingE.setName("alreadyExisting");
 
-            Mockito.when(spaceShipRepository.findFirstByNameIgnoreCase("alreadyExisting"))
-                    .thenReturn(Optional.of(alreadyExistingE));
-            Mockito.when(spaceShipRepository.findFirstByNameIgnoreCase(noShipEquipment.getName())).thenReturn(Optional.empty());
-            Mockito.when(spaceShipRepository.findById(ArgumentMatchers.anyLong()))
-                    .thenReturn(Optional.of(alreadyExistingE));
+//            Mockito.when(spaceShipRepository.findFirstByNameIgnoreCase("alreadyExisting"))
+//                    .thenReturn(Optional.of(alreadyExistingE));
+//            Mockito.when(spaceShipRepository.findFirstByNameIgnoreCase(noShipEquipment.getName())).thenReturn(Optional.empty());
+//            Mockito.when(spaceShipRepository.findById(ArgumentMatchers.anyLong()))
+//                    .thenReturn(Optional.of(alreadyExistingE));
 
             final BusinessRuleViolatedException ex = Assertions.assertThrows(BusinessRuleViolatedException.class,
                     () -> spaceShipService.updateSpaceShip(null, SpaceShipFactory.getDTO()));

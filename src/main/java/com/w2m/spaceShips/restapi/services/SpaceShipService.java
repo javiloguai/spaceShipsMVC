@@ -17,8 +17,6 @@ public interface SpaceShipService {
 
     Page<SpaceShipDomain> pageAllSpaceShips(final Pageable pageable);
 
-    List<SpaceShipDomain> getAllSpaceShipsByName(final String name);
-
     Page<SpaceShipDomain> pageAllSpaceShipsByName(final String name, final Pageable pageable);
 
     SpaceShipDomain findById(final Long id);

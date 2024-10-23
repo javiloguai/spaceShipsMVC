@@ -1,7 +1,6 @@
 package com.w2m.spaceShips.restapi.services.jwt;
 
 import com.w2m.spaceShips.constants.SecurityConstants;
-import com.w2m.spaceShips.utils.ParamUtils;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -16,6 +15,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.stereotype.Component;
+import org.springframework.util.StringUtils;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
@@ -67,7 +67,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     private String getTokenFromRequest(HttpServletRequest request) {
         String token;
         final String bearerToken = request.getHeader(HttpHeaders.AUTHORIZATION);
-        if (ParamUtils.paramInformed(bearerToken) && bearerToken.startsWith(SecurityConstants.BEARER)) {
+        if (StringUtils.hasText(bearerToken) && bearerToken.startsWith(SecurityConstants.BEARER)) {
             token = bearerToken.replace(SecurityConstants.BEARER, org.apache.commons.lang3.StringUtils.EMPTY);
         } else {
             token = bearerToken;

@@ -1,7 +1,6 @@
 package com.w2m.spaceShips.restapi.services;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 
 import java.util.Map;
@@ -14,8 +13,11 @@ import java.util.Objects;
  */
 public class BasicService {
 
-    @Autowired
-    private ApplicationContext applicationContext;
+    private final ApplicationContext applicationContext;
+
+    public BasicService(final ApplicationContext applicationContext) {
+        this.applicationContext = applicationContext;
+    }
 
     /**
      * Checks if an Object have a at least minimum fields with value

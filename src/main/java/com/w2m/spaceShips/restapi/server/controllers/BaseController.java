@@ -8,7 +8,6 @@ import com.w2m.spaceShips.config.exception.UnauthorizedException;
 import lombok.Data;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
 import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.http.HttpStatus;
@@ -45,8 +44,11 @@ public class BaseController {
 
     Logger logger = LoggerFactory.getLogger(BaseController.class);
 
-    @Autowired
-    private MessageSource messageSource;
+    private final MessageSource messageSource;
+
+    public BaseController(final MessageSource messageSource) {
+        this.messageSource = messageSource;
+    }
 
     @ExceptionHandler
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)

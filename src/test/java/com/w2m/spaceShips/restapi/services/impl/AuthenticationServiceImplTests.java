@@ -10,12 +10,13 @@ import com.w2m.spaceShips.restapi.services.jwt.JwtService;
 import jakarta.servlet.ServletOutputStream;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
+import org.mockito.MockitoAnnotations;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.HttpHeaders;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -47,8 +48,14 @@ class AuthenticationServiceImplTests {
     @Mock
     private AuthenticationManager authenticationManager;
 
-    @InjectMocks
     private AuthenticationServiceImpl authenticationService;
+
+    @BeforeEach
+    void setUp() {
+        MockitoAnnotations.openMocks(this);
+        this.authenticationService = new AuthenticationServiceImpl(userRepository,
+                passwordEncoder, jwtService, authenticationManager);
+    }
 
     @Test
     @Disabled
