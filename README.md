@@ -65,6 +65,8 @@ This application has been implemented using:
 > > run docker build -t spacehips_api .
 >
 > > docker-compose up --build -d
+>
+> > A Kafka broker and Zookepper is embedded on docker
 
 ## Testing
 
