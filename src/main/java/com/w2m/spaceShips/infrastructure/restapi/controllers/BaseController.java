@@ -147,7 +147,7 @@ public class BaseController {
     }
 
     /**
-     * Tratamiento para org.springframework.orm.jpa.JpaSystemException
+     * Handler para org.springframework.orm.jpa.JpaSystemException
      *
      * @param exception
      * @return
@@ -163,7 +163,7 @@ public class BaseController {
     }
 
     /**
-     * Tratamiento para JsonProcessingException
+     * Handler para JsonProcessingException
      *
      * @param exception
      * @return
@@ -179,7 +179,7 @@ public class BaseController {
     }
 
     /**
-     * Tratamiento para JsonProcessingException
+     * Handler para AlreadyExistException
      *
      * @param exception
      * @return

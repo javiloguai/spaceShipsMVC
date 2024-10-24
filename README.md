@@ -40,6 +40,8 @@ This application has been implemented using:
 
 #### Docker containers
 
+#### Kafka queue messaging
+
 ## Java version
 
 > java version used to compile is Temurin JDK 21+35 (LTS)
@@ -48,25 +50,29 @@ This application has been implemented using:
 
 > IntelliJ IDEA 2023.1.2 (Community Edition)
 
-## To start API on a docker container
+## To start API on an IDE's Springboot embedded server
 
+> > Be sure that spring.kafka.bootstrap-servers in applications.properties is set to localhost:9092
 > > run mvn clean install
 >
-> > run docker build -t spaceShips_api .
+> > run SpaceShipsApplication class with IDE's Springboot embedded Server.
+
+## To start API on a docker container
+
+> > Be sure that spring.kafka.bootstrap-servers in applications.properties is set to kafka:9092
+> > run mvn clean install
 >
-> > docker-compose up --build
+> > run docker build -t spacehips_api .
+>
+> > docker-compose up --build -d
 
 #### Testing
 
 > JUnit tests are performed on 'mvn clean install'
 
 > Integration Test should be performed on 'mvn clean install' or 'mvn verify' but I am just able to execute it via IDE
-> menú context. PATH to Integration Test is in 'spaceShipsMVC.src.test.java.com.w2m.spaceShips.integrationtests'
-
-#### Integration Test
-
-##To start API on a container docker
-run mvn clean install
+> menú context. PATH to Integration Test is in '
+> spaceShipsMVC.src.test.java.com.w2m.spaceShips.infrastructure.restapi.controllers.integrationtests'
 
 ## To access H2 DB console
 
