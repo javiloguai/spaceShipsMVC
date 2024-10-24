@@ -66,7 +66,7 @@ This application has been implemented using:
 >
 > > docker-compose up --build -d
 
-#### Testing
+## Testing
 
 > JUnit tests are performed on 'mvn clean install'
 
