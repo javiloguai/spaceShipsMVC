@@ -25,7 +25,7 @@ public interface SpaceShipService {
 
     SpaceShipDomain createSpaceShip(final SpaceShipDTO spaceShipDTO);
 
-    SpaceShipDomain addEquipment(final Long id, final Equipment equipment);
+    SpaceShipDomain addEquipment(final Long id, final Equipment shipEquipment);
 
     SpaceShipDomain updateSpaceShip(final Long id, final SpaceShipDTO spaceShipDTO);
 

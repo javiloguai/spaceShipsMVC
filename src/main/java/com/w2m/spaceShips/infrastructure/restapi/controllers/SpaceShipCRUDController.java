@@ -6,7 +6,7 @@ import com.w2m.spaceShips.domain.model.SpaceShipDomain;
 import com.w2m.spaceShips.infrastructure.config.aspects.annotations.LogNegativeIdParam;
 import com.w2m.spaceShips.infrastructure.constants.RequestMappings;
 import com.w2m.spaceShips.infrastructure.restapi.assemblers.SpaceShipModelAssembler;
-import com.w2m.spaceShips.infrastructure.restapi.mappers.response.SpaceShipRequestMapper;
+import com.w2m.spaceShips.infrastructure.restapi.mappers.request.SpaceShipRequestMapper;
 import com.w2m.spaceShips.infrastructure.restapi.mappers.response.SpaceShipResponseMapper;
 import com.w2m.spaceShips.infrastructure.restapi.model.requests.SpaceShipRequest;
 import com.w2m.spaceShips.infrastructure.restapi.model.response.SpaceShipResponse;

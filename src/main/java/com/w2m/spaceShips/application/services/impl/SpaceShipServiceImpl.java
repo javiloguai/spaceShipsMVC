@@ -5,7 +5,6 @@ import com.w2m.spaceShips.application.exception.BusinessRuleViolatedException;
 import com.w2m.spaceShips.application.exception.NotFoundException;
 import com.w2m.spaceShips.application.mappers.SpaceShipDomainMapper;
 import com.w2m.spaceShips.application.model.SpaceShipDTO;
-import com.w2m.spaceShips.application.services.BasicService;
 import com.w2m.spaceShips.application.services.SpaceShipService;
 import com.w2m.spaceShips.domain.enums.Equipment;
 import com.w2m.spaceShips.domain.model.SpaceShipDomain;
@@ -18,7 +17,6 @@ import com.w2m.spaceShips.infrastructure.persistence.repositories.SpaceShipRepos
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.cache.annotation.Caching;
-import org.springframework.context.ApplicationContext;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -39,7 +37,7 @@ import java.util.Objects;
 @Service
 @Validated
 @Transactional
-public class SpaceShipServiceImpl extends BasicService implements SpaceShipService {
+public class SpaceShipServiceImpl implements SpaceShipService {
 
     private static final String ID_MANDATORY = "Id field is Mandatory";
 
@@ -59,10 +57,8 @@ public class SpaceShipServiceImpl extends BasicService implements SpaceShipServi
 
     private final SpaceShipEquipmentRepository spaceShipEquipmentRepository;
 
-    public SpaceShipServiceImpl(final ApplicationContext applicationContext,
-                                final SpaceShipRepository spaceShipRepository,
+    public SpaceShipServiceImpl(final SpaceShipRepository spaceShipRepository,
                                 final SpaceShipEquipmentRepository spaceShipEquipmentRepository) {
-        super(applicationContext);
         this.spaceShipRepository = spaceShipRepository;
         this.spaceShipEquipmentRepository = spaceShipEquipmentRepository;
     }
@@ -173,34 +169,15 @@ public class SpaceShipServiceImpl extends BasicService implements SpaceShipServi
             @CacheEvict(value = "pagedships", allEntries = true), @CacheEvict(value = "allships", allEntries = true),
             @CacheEvict(value = "pagedallships", allEntries = true),
             @CacheEvict(value = "equipment", allEntries = true)})
-    public SpaceShipDomain addEquipment(final Long id, final Equipment equipment) {
+    public SpaceShipDomain addEquipment(final Long id, final Equipment shipEquipment) {
 
-        validateAddEquipment(id, equipment);
+        validateAddEquipment(id, shipEquipment);
 
-        SpaceShipEquipmentEntity equipmentToAdd = SpaceShipEquipmentEntity.builder().spaceShipId(id).shipEquipment(equipment).build();
+        SpaceShipEquipmentEntity equipmentToAdd = SpaceShipEquipmentEntity.builder().spaceShipId(id).shipEquipment(shipEquipment).build();
 
         spaceShipEquipmentRepository.saveAndFlush(equipmentToAdd);
 
         return SpaceShipDataBaseMapper.INSTANCE.entityToDomain(this.getEntityById(id));
-    }
-
-    private void validateAddEquipment(final Long id, final Equipment shipEquipment) {
-
-        if (id == null) {
-            throw new BusinessRuleViolatedException(ID_MANDATORY);
-        }
-        if (shipEquipment == null) {
-            throw new BusinessRuleViolatedException(EQUIPMENT_MANDATORY);
-        }
-
-        SpaceShipDomain shipDomain = this.findById(id);
-
-        List<SpaceShipEquipmentDomain> equipmentList = shipDomain.getEquipment();
-        List<Equipment> equipmentL = equipmentList.stream().map(p -> p.getShipEquipment()).distinct().toList();
-
-        if (!equipmentL.isEmpty() && equipmentL.contains(shipEquipment)) {
-            throw new AlreadyExistException("This SpaceShip already has that ship equipment: " + shipEquipment);
-        }
     }
 
     @Override
@@ -235,6 +212,25 @@ public class SpaceShipServiceImpl extends BasicService implements SpaceShipServi
             spaceShipRepository.flush();
         }
 
+    }
+
+    private void validateAddEquipment(final Long id, final Equipment shipEquipment) {
+
+        if (id == null) {
+            throw new BusinessRuleViolatedException(ID_MANDATORY);
+        }
+        if (shipEquipment == null) {
+            throw new BusinessRuleViolatedException(EQUIPMENT_MANDATORY);
+        }
+
+        SpaceShipDomain shipDomain = this.findById(id);
+
+        List<SpaceShipEquipmentDomain> equipmentList = shipDomain.getEquipment();
+        List<Equipment> equipmentL = equipmentList.stream().map(p -> p.getShipEquipment()).distinct().toList();
+
+        if (!equipmentL.isEmpty() && equipmentL.contains(shipEquipment)) {
+            throw new AlreadyExistException("This SpaceShip already has that ship equipment: " + shipEquipment);
+        }
     }
 
     private SpaceShipEntity getEntityById(final Long id) {

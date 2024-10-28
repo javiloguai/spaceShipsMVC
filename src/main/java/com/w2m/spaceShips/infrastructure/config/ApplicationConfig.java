@@ -1,4 +1,4 @@
-package com.w2m.spaceShips.infrastructure;
+package com.w2m.spaceShips.infrastructure.config;
 
 import com.w2m.spaceShips.infrastructure.persistence.repositories.UserRepository;
 import lombok.RequiredArgsConstructor;

@@ -325,7 +325,7 @@ class SpaceShipCRUDControllerIT {
     }
 
     @Nested
-    @DisplayName("deleteSpaceShip Test test cases")
+    @DisplayName("deleteSpaceShip Test cases")
     class deleteSpaceShipTest {
         @Test
         void givenRequestingUserWithPermissions_ThenOperationIsAccepted() throws Exception {
@@ -362,7 +362,7 @@ class SpaceShipCRUDControllerIT {
     }
 
     @Nested
-    @DisplayName("deleteAllSpaceShips Test test cases")
+    @DisplayName("deleteAllSpaceShips Test Cases")
     class deleteAllSpaceShipsTest {
         @Test
         void givenRequestingUserWithPermissions_ThenOperationIsAccepted() throws Exception {

@@ -1,10 +1,9 @@
-package com.w2m.spaceShips.infrastructure.restapi.mappers.response;
+package com.w2m.spaceShips.infrastructure.restapi.mappers.request;
 
-import com.w2m.spaceShips.infrastructure.constants.MapperConstants;
 import com.w2m.spaceShips.application.model.SpaceShipDTO;
 import com.w2m.spaceShips.application.model.SpaceShipEquipmentDTO;
 import com.w2m.spaceShips.domain.enums.Equipment;
-import com.w2m.spaceShips.infrastructure.restapi.mappers.request.RequestMapper;
+import com.w2m.spaceShips.infrastructure.constants.MapperConstants;
 import com.w2m.spaceShips.infrastructure.restapi.model.requests.SpaceShipRequest;
 import org.mapstruct.Mapper;
 import org.mapstruct.factory.Mappers;

@@ -16,7 +16,6 @@ import org.junit.jupiter.api.*;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.*;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.context.ApplicationContext;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
@@ -52,8 +51,6 @@ public class SpaceShipServiceImplTest {
 
     private SpaceShipServiceImpl spaceShipService;
 
-    @Mock
-    private ApplicationContext applicationContext;
 
     @Mock
     private SpaceShipRepository spaceShipRepository;
@@ -70,8 +67,7 @@ public class SpaceShipServiceImplTest {
     @BeforeEach
     void setUp() {
         MockitoAnnotations.openMocks(this);
-        this.spaceShipService = new SpaceShipServiceImpl(applicationContext,
-                spaceShipRepository, spaceShipEquipmentRepository);
+        this.spaceShipService = new SpaceShipServiceImpl(spaceShipRepository, spaceShipEquipmentRepository);
     }
 
     /**

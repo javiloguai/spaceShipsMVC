@@ -1,4 +1,4 @@
-package com.w2m.spaceShips.infrastructure.restapi.mappers.request;
+package com.w2m.spaceShips.infrastructure.restapi.mappers.response;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
